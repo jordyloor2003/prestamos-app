@@ -67,10 +67,20 @@ export async function POST(req: NextRequest) {
       </div>
     `;
 
-    // Despacho de Email mediante Notify API en AWS EC2 con Idempotency-Key
+    // Despacho de Email mediante Notify API en AWS EC2 con Template y Llave de Idempotencia
     const notifyResult = await dispatchNotification({
       channel: 'Email',
       recipient: email.trim(),
+      templateCode: 'LOAN_DISBURSED',
+      templateVariables: {
+        nombre: String(borrowerName),
+        loanId: String(loanId),
+        monto: Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2 }),
+        plazo: String(months),
+        cuota: Number(monthlyQuota).toLocaleString('en-US', { minimumFractionDigits: 2 }),
+        banco: bankName || 'Banco Pichincha',
+        cuenta: String(bankAccount),
+      },
       subject: `¡Crédito Desembolsado con Éxito! - Comprobante #${loanId}`,
       body: emailHtmlBody,
       idempotencyKey,
