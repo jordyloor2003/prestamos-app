@@ -38,10 +38,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Código de seguridad enviado por SMS a ${maskedPhone}`,
+      message: `Código de seguridad enviado a ${maskedPhone}`,
       notification: result,
-      // Para facilitar pruebas en vivo y demostraciones evaluativas
-      demoOtpCode: otpCode,
     });
   } catch (error: any) {
     console.error('Error enviando OTP:', error);

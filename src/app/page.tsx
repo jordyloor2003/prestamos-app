@@ -16,7 +16,6 @@ import {
   DollarSign,
   CreditCard,
   User,
-  Zap,
   Info,
   Clock,
   Layers,
@@ -85,7 +84,6 @@ export default function Home() {
 
   // OTP y Notificaciones
   const [otpValue, setOtpValue] = useState<string>('');
-  const [demoOtpHint, setDemoOtpHint] = useState<string | null>(null);
   const [otpNotificationId, setOtpNotificationId] = useState<string | null>(null);
   const [disburseResult, setDisburseResult] = useState<any>(null);
   const [disburseNotificationDetail, setDisburseNotificationDetail] = useState<NotificationDetail | null>(null);
@@ -155,7 +153,6 @@ export default function Home() {
         throw new Error(data.error || 'Error al enviar código SMS');
       }
 
-      setDemoOtpHint(data.demoOtpCode);
       setOtpNotificationId(data.notification?.id || null);
       setStep('otp_modal');
     } catch (error: any) {
@@ -276,7 +273,6 @@ export default function Home() {
       loanId: `LOAN-${Math.floor(100000 + Math.random() * 900000)}`,
     }));
     setOtpValue('');
-    setDemoOtpHint(null);
     setOtpNotificationId(null);
     setDisburseResult(null);
     setDisburseNotificationDetail(null);
@@ -650,21 +646,16 @@ export default function Home() {
                     <p className="font-mono text-sm text-blue-400 font-semibold">{borrower.phone}</p>
                   </div>
 
-                  {/* Banner de Ayuda para Pruebas / Demostraciones */}
-                  {demoOtpHint && (
-                    <div className="bg-emerald-950/40 border border-emerald-800/80 rounded-xl p-3 text-xs text-emerald-300 flex items-start space-x-2">
-                      <Zap className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-bold">Código OTP Detectado en Notify API:</span>
-                        <div className="mt-1 font-mono text-base font-black text-emerald-400 tracking-widest">
-                          {demoOtpHint}
-                        </div>
-                        <span className="text-[10px] text-emerald-400/80">
-                          (Generado por la plantilla `2FA_CODE` en Notify API para evaluación en tiempo real).
-                        </span>
-                      </div>
+                  {/* Banner de Entrega Móvil Segura */}
+                  <div className="bg-blue-950/40 border border-blue-800/60 rounded-xl p-3.5 text-xs text-blue-200 flex items-start space-x-3">
+                    <Smartphone className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-white">Código de Verificación Enviado</span>
+                      <p className="mt-1 text-slate-300 text-[11px] leading-relaxed">
+                        Hemos despachado el código de 6 dígitos a tu dispositivo (SMS / Telegram). Revisa tu bandeja e ingrésalo a continuación para autorizar el desembolso.
+                      </p>
                     </div>
-                  )}
+                  </div>
 
                   {/* Input OTP */}
                   <div className="space-y-2">
