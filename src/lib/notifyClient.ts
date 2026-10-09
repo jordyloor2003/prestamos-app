@@ -26,8 +26,7 @@ export async function getAuthToken(): Promise<string> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-      grantType: 'client_credentials',
+      clientSecret: CLIENT_SECRET
     }),
     cache: 'no-store',
   });
