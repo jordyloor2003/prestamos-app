@@ -7,7 +7,9 @@ interface TokenCache {
 
 let cachedToken: TokenCache | null = null;
 
-const NOTIFY_API_URL = process.env.NOTIFY_API_URL || 'http://52.15.152.202';
+const RAW_NOTIFY_API_URL = process.env.NOTIFY_API_URL || 'http://52.15.152.202';
+// Normalizar la URL para remover barras finales y evitar duplicar el prefijo /api/v1
+const NOTIFY_API_URL = RAW_NOTIFY_API_URL.replace(/\/+$/, '').replace(/\/api\/v1$/, '');
 const CLIENT_ID = process.env.NOTIFY_CLIENT_ID || 'app_bancamovil_prod';
 const CLIENT_SECRET = process.env.NOTIFY_CLIENT_SECRET || 'sec_99a8b7c6d5e4f3a2b1c0';
 
@@ -21,19 +23,23 @@ export async function getAuthToken(): Promise<string> {
     return cachedToken.accessToken;
   }
 
-  const response = await fetch(`${NOTIFY_API_URL}/api/v1/auth/token`, {
+  const endpoint = `${NOTIFY_API_URL}/api/v1/auth/token`;
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET
+      clientSecret: CLIENT_SECRET,
+      grantType: 'client_credentials',
     }),
     cache: 'no-store',
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error de autenticación con Notify API [${response.status}]: ${errorText}`);
+    throw new Error(
+      `Error de autenticación con Notify API [${response.status}] en ${endpoint}: ${errorText || 'Endpoint no encontrado (404)'}`
+    );
   }
 
   const data = await response.json();
